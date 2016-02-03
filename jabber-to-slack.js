@@ -2,7 +2,8 @@ var xmpp = require('simple-xmpp');
 var request = require('request');
 var config = require('config');
 
-var jid = config.get('xmpp.jid');
+var jid = process.env.XMPP_JID;
+console.log('jid is: ' + jid);
 var password =  config.get('xmpp.password');
 var host = config.get('xmpp.host');
 var port =  config.get('xmpp.port');
