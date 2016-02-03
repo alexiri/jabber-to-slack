@@ -3,14 +3,13 @@ var request = require('request');
 var config = require('config');
 
 var jid = process.env.XMPP_JID;
-console.log('jid is: ' + jid);
-var password =  config.get('xmpp.password');
-var host = config.get('xmpp.host');
-var port =  config.get('xmpp.port');
-var conferenceserver =config.get('xmpp.conferenceserver');
-var botname = config.get('botname');
-var slacktoken = config.get('slack-token');
-var rooms = config.get('rooms');
+var password = process.env.XMPP_PASSWORD;
+var host = process.env.XMPP_HOST;
+var port =  process.env.XMPP_PORT;
+var conferenceserver = process.env.XMPP_CONFERENCESERVER;
+var botname = process.env.BOTNAME;
+var slacktoken = process.env.SLACK_TOKEN;
+var rooms = process.env.ROOMS.split(',');
 
 xmpp.connect({
             jid: jid,
