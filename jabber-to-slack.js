@@ -81,13 +81,15 @@ slack.on('message', function(message) {
 
   var userName = (user != null ? user.name : void 0) != null ? "@" + user.name : "UNKNOWN_USER";
 
-  console.log("Received: " + type + " (" + subtype +") " + channelName + " " + userName + " " + ts + " \"" + text + "\"");
+  console.log("Slack Received: " + type + " (" + subtype +") " + channelName + " " + userName + " " + ts + " \"" + text + "\"");
 
   if (channel.is_im) {
     console.log('Not interesting - DM');
   } else {
     if (subtype == 'channel_join' || subtype == 'channel_leave') {
       console.log('Not interesting - join or leave');
+    } else if (subtype == 'bot_message') {
+      console.log('Not interesting - bot message');
     } else if (typeof subtype === "undefined") {
       console.log('Interesting! - Send to XMPP');
     } else {
@@ -164,7 +166,7 @@ xmpp.on('groupchat', function(conference, from, message, stamp) {
         var parts = conference.split('@', 1);
         var room = parts[0];
         var channel = room;
-        console.log("Conference: " + conference + " (" + channel + ") from: " + from + " stamp: " + stamp);
+        console.log("XMPP Received: " + conference + " (" + channel + ") from: " + from + " stamp: " + stamp);
         console.log(message);
         if (!stamp && channel) {
             // Only log non hitory messages
