@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "config": "",
-    "node-xmpp-client": "",
     "request": "",
-    "simple-xmpp": ""
+    "simple-xmpp": "",
+    "slack-client": "1.5.1"
   }
 }
