@@ -92,6 +92,11 @@ slack.on('message', function(message) {
       console.log('Not interesting - bot message');
     } else if (typeof subtype === "undefined") {
       console.log('Interesting! - Send to XMPP');
+
+      var xmpp_message = "[" + user.real_name + "] " + text;
+      var to = channel.name + "@" + conferenceserver;
+      console.log(to, xmpp_message);
+      xmpp.send(to, xmpp_message, true);
     } else {
       console.log("I don't know!");
       debug(message);
@@ -167,8 +172,7 @@ xmpp.on('groupchat', function(conference, from, message, stamp) {
         var room = parts[0];
         var channel = room;
         console.log("XMPP Received: " + conference + " (" + channel + ") from: " + from + " stamp: " + stamp);
-        console.log(message);
-        if (!stamp && channel) {
+        if (!stamp && channel && from != botname) {
             // Only log non hitory messages
             send('chat.postMessage', {
                 channel: "#" + channel,
@@ -186,7 +190,7 @@ function send (method, args) {
     args = args || {} ;
     args.token = slacktoken,
     console.log("Sending: ");
-    console.log(args);
+    debug(args);
     request.post({
         url: 'https://slack.com/api/' + method,
         json: true,
