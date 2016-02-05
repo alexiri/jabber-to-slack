@@ -109,95 +109,64 @@ slack.on('error', function(error) {
   console.error("Error: ", error);
 });
 
-slack.on('channel_joined', function(e) {
-  console.log('channel joined');
-  debug(e);
-});
-
-slack.on('channel_left', function(e) {
-  console.log('channel left');
-  debug(e);
-});
-
-slack.on('channel_rename', function(e) {
-  console.log('channel rename');
-  debug(e);
-});
-
-slack.on('channel_archive', function(e) {
-  console.log('channel archive');
-  debug(e);
-});
-
-slack.on('channel_unarchive', function(e) {
-  console.log('channel unarchive');
-  debug(e);
-});
-
-slack.on('invite', function(e) {
-  console.log('invite');
-  debug(e);
-});
-
-
 slack.login();
 
 xmpp.connect({
-            jid: jid,
-            password: password,
-            host: host,
-            port: port
+  jid: jid,
+  password: password,
+  host: host,
+  port: port
 });
 
 xmpp.on('error', function(err) {
-        console.error(err);
+  console.error(err);
 });
 
 xmpp.on('online', function(data) {
-    console.log('Connected with JID: ' + data.jid.user);
-    for (var i in rooms){
-        join_room(rooms[i]);
-    }
+  console.log('Connected to XMPP with JID: ' + data.jid.user);
+  for (var i in rooms) {
+    join_room(rooms[i]);
+  }
 });
 
 function join_room(roomname) {
-    var room = roomname + '@' + conferenceserver;
-    var to = room + '/' + botname;
-    xmpp.join(to);
-    console.log('Joined channel "%s"', room);
+  var room = roomname + '@' + conferenceserver;
+  var to = room + '/' + botname;
+  xmpp.join(to);
+  console.log('Joined channel "%s"', room);
 }
 
 xmpp.on('groupchat', function(conference, from, message, stamp) {
-        var parts = conference.split('@', 1);
-        var room = parts[0];
-        var channel = room;
-        console.log("XMPP Received: " + conference + " (" + channel + ") from: " + from + " stamp: " + stamp);
-        if (!stamp && channel && from != botname) {
-            // Only log non hitory messages
-            send('chat.postMessage', {
-                channel: "#" + channel,
-                text: message,
-                username: from,
-                parse: 'full',
-                link_names: 0,
-                unfurl_links: 1
-            });
-        }
+  var parts = conference.split('@', 1);
+  var room = parts[0];
+  var channel = room;
+  console.log("XMPP Received: " + conference + " (" + channel + ") from: " + from + " stamp: " + stamp);
+  if (!stamp && channel && from != botname) {
+    // Only log non hitory messages
+    send('chat.postMessage', {
+      channel: "#" + channel,
+      text: message,
+      username: from,
+      parse: 'full',
+      link_names: 0,
+      unfurl_links: 1
+    });
+  }
 });
 
 
 function send (method, args) {
-    args = args || {} ;
-    args.token = slacktoken,
-    console.log("Sending: ");
-    debug(args);
-    request.post({
-        url: 'https://slack.com/api/' + method,
-        json: true,
-        form: args
-    }, function (error, response, body) {
-        if (error || !body.ok) {
-            console.log('Error:', error || body.error);
-        }
-    });
+  args = args || {} ;
+  args.token = slacktoken,
+  console.log("Sending: ");
+  debug(args);
+  request.post({
+    url: 'https://slack.com/api/' + method,
+    json: true,
+    form: args
+  }, function (error, response, body) {
+    if (error || !body.ok) {
+      console.log('Error:', error || body.error);
+    }
+  });
 };
